@@ -3,11 +3,13 @@ import copy
 
 import backtracking
 import csp
+import dancing_links
 from puzzles import puzzle_easy, puzzle_hard, print_board
 
 solvers = {
     "Naive Backtracking": backtracking.solve_board,
-    "Constraint Satisfaction Problem": csp.solve_board
+    "Constraint Satisfaction Problem": csp.solve_board,
+    "Dancing Links": dancing_links.solve_board
 }
 
 puzzles = {
