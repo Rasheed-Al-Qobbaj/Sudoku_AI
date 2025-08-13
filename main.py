@@ -2,10 +2,12 @@ import time
 import copy
 
 import backtracking
+import csp
 from puzzles import puzzle_easy, puzzle_hard, print_board
 
 solvers = {
     "Naive Backtracking": backtracking.solve_board,
+    "Constraint Satisfaction Problem": csp.solve_board
 }
 
 puzzles = {
@@ -36,7 +38,7 @@ if __name__ == '__main__':
                 print_board(board_to_solve)
                 print(f"SUCCESS: Solved in {duration:.4f} ms\n")
             else:
-                print(f"FAILURE or NOT IMPLEMENTED: Could not solve. Time: {duration:.4f} ms\n")
+                print(f"FAILURE: Could not solve. Time: {duration:.4f} ms\n")
 
             print("-" * 30)
 
