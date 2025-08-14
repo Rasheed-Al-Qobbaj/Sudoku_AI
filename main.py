@@ -4,6 +4,7 @@ import copy
 import backtracking
 import csp
 import dancing_links
+import generator
 from puzzles import puzzle_easy, puzzle_hard, print_board
 
 solvers = {
@@ -45,3 +46,9 @@ if __name__ == '__main__':
             print("-" * 30)
 
         print("\n\n")
+
+        print("--- Generating a new Sudoku Puzzle ---")
+        generated_puzzle = generator.generate_puzzle(difficulty='hard')
+        print("New puzzle generated:")
+        print_board(generated_puzzle)
+        print("\n" + "=" * 30 + "\n")

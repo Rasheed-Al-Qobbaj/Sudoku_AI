@@ -46,3 +46,29 @@ def solve_board(board):
             board[row][col] = 0  # Backtrack
 
     return False
+
+def count_solutions(board):
+    """Recursively counts the number of solutions for a given board."""
+    find = find_empty(board)
+    if not find:
+        # No empty cells means we found one complete solution
+        return 1
+
+    row, col = find
+    count = 0
+
+    for num in range(1, 10):
+        if is_valid(board, num, (row, col)):
+            board[row][col] = num
+            count += count_solutions(board)
+            # Crucially, don't stop after finding one solution.
+            # Continue searching for more.
+
+            # Backtrack to explore other possibilities
+            board[row][col] = 0
+
+            # If we found more than one solution, we can stop early
+            if count > 1:
+                return count
+
+    return count
