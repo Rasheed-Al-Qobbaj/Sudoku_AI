@@ -4,8 +4,9 @@ import copy
 import backtracking
 import csp
 import dancing_links
-import generator
+from generator import generate_puzzle
 from puzzles import puzzle_easy, puzzle_hard, print_board
+from rater import rate_puzzle
 
 solvers = {
     "Naive Backtracking": backtracking.solve_board,
@@ -48,7 +49,20 @@ if __name__ == '__main__':
         print("\n\n")
 
         print("--- Generating a new Sudoku Puzzle ---")
-        generated_puzzle = generator.generate_puzzle(difficulty='hard')
+        start_time = time.time()
+        generated_puzzle = generate_puzzle(difficulty='hard')
+        end_time = time.time()
+        duration = (end_time - start_time) * 1000  # in milliseconds
         print("New puzzle generated:")
         print_board(generated_puzzle)
+        print(f"Puzzle generation took {duration:.4f} ms\n")
         print("\n" + "=" * 30 + "\n")
+
+        print("--- Rating the generated puzzle ---")
+        start_time = time.time()
+        difficulty, score = rate_puzzle(generated_puzzle)
+        end_time = time.time()
+        duration = (end_time - start_time) * 1000
+        print(f"Puzzle difficulty: {difficulty} (Score: {score})")
+        print(f"Rating took {duration:.4f} ms\n")
+        print("=" * 30 + "\n")
