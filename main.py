@@ -52,7 +52,7 @@ if __name__ == '__main__':
         start_time = time.time()
         generated_puzzle = generate_puzzle(difficulty='hard')
         end_time = time.time()
-        duration = (end_time - start_time) * 1000  # in milliseconds
+        duration = (end_time - start_time) * 1000
         print("New puzzle generated:")
         print_board(generated_puzzle)
         print(f"Puzzle generation took {duration:.4f} ms\n")

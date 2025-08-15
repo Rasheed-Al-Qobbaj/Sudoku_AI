@@ -6,7 +6,7 @@ from puzzles import print_board
 
 # --- Model Loading ---
 try:
-    model = load_model('final_sudoku_custom_augmented_model.keras')
+    model = load_model('sudoku_custom_model_with_feedback.keras')
 except Exception as e:
     print(f"Error loading model: {e}")
     model = None
@@ -105,6 +105,23 @@ def prepare_cell_for_model(cell_image):
     return img_reshaped
 
 
+def detect_and_normalize_polarity(warped_grid):
+    """
+    Analyzes the entire grid's histogram to robustly detect polarity and standardize it.
+    Returns a grid that is always dark text on a light background.
+    """
+    # Calculate the median pixel value of the entire grid
+    median_pixel = np.median(warped_grid)
+
+    # If the median is dark (less than half brightness), we assume it's a "dark mode" puzzle
+    if median_pixel < 127:
+        # Invert the image
+        return cv2.bitwise_not(warped_grid)
+
+    # Otherwise, it's already in the standard "light mode" format
+    return warped_grid
+
+
 # --- Recognizer and Main Pipeline ---
 def recognize_digits(cells):
     """
@@ -116,7 +133,7 @@ def recognize_digits(cells):
         return None
 
     board = np.zeros((9, 9), dtype=int)
-    class_names = sorted([int(d) for d in os.listdir('dataset_augmented') if d.isdigit()])
+    class_names = sorted([int(d) for d in os.listdir('[SCRAPPED] CNN/dataset_augmented') if d.isdigit()])
 
     for i, cell in enumerate(cells):
         # 1. Use your rule-based check for empty cells first.
@@ -163,27 +180,44 @@ def recognize_digits(cells):
 
 
 def image_to_board(image_path):
+    """The complete pipeline with a more robust grid finding mechanism."""
     img = cv2.imread(image_path)
-    if img is None:
-        return None, None, None
+    if img is None: return None, None, None
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img_blur = cv2.GaussianBlur(img_gray, (5, 5), 1)
-    img_thresh = cv2.adaptiveThreshold(img_blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-    contours, _ = cv2.findContours(img_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     img_contours = img.copy()
+
+    # --- Robust Grid Finding ---
+    # Method 1: Adaptive Threshold (Good for varied lighting)
+    img_thresh_adaptive = cv2.adaptiveThreshold(img_blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV,
+                                                11, 2)
+    contours, _ = cv2.findContours(img_thresh_adaptive, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     biggest_contour = find_biggest_contour(contours)
+
+    # Method 2: Fallback to Simple Threshold (Good for high contrast / dark mode)
     if biggest_contour.size == 0:
-        return None, None, None
+        _, img_thresh_simple = cv2.threshold(img_blur, 128, 255, cv2.THRESH_BINARY_INV)
+        contours, _ = cv2.findContours(img_thresh_simple, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        biggest_contour = find_biggest_contour(contours)
+
+    if biggest_contour.size == 0:
+        print("Could not find a Sudoku grid contour.")
+        return None, img_contours, None
+    # --- End of Robust Grid Finding ---
+
     cv2.drawContours(img_contours, [biggest_contour], -1, (0, 255, 0), 3)
     points = reorder_points(biggest_contour)
     pts1 = np.float32(points)
     pts2 = np.float32([[0, 0], [450, 0], [0, 450], [450, 450]])
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
-    img_warped = cv2.warpPerspective(img, matrix, (450, 450))
-    img_warped_gray = cv2.cvtColor(img_warped, cv2.COLOR_BGR2GRAY)
-    cells = split_into_cells(img_warped_gray)
-    board = recognize_digits(cells)
-    return board, img_contours, img_warped_gray
+    img_warped_gray = cv2.warpPerspective(img_gray, matrix, (450, 450))
+
+    img_standardized = detect_and_normalize_polarity(img_warped_gray)
+
+    cells = split_into_cells(img_standardized)
+    board = recognize_digits(cells)  # We will replace this function next
+
+    return board, img_contours, img_standardized
 
 
 if __name__ == '__main__':
