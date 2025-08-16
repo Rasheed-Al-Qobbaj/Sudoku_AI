@@ -9,7 +9,7 @@ from skimage.util import random_noise
 # --- Configuration ---
 IMG_SIZE = 28
 NUM_SAMPLES_PER_DIGIT = 2500
-OUTPUT_DIR = 'dataset_final_augmented_with_feedback'
+OUTPUT_DIR = '../CNN/dataset_final_augmented_with_feedback'
 
 
 FONTS = [

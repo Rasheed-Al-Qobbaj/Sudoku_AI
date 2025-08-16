@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center">
+    <h1>Play Sudoku</h1>
+    <p>Fill in the grid and test your skills!</p>
+</div>
+
+
+<table class="sudoku-grid">
+    <tbody>
+        {% for row in range(9) %}
+        <tr>
+            {% for col in range(9) %}
+            <td>
+                <input class="sudoku-cell" type="text" maxlength="1">
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="text-center">
+    <button class="btn btn-success">Check Solution</button>
+    <button class="btn btn-warning">Reset</button>
+</div>
+
+{% endblock %}

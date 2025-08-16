@@ -6,7 +6,7 @@ import pathlib
 print("TensorFlow version:", tf.__version__)
 
 # --- Configuration ---
-DATASET_DIR = 'dataset_final_augmented_with_feedback'
+DATASET_DIR = '../CNN/dataset_final_augmented_with_feedback'
 IMG_HEIGHT = 28
 IMG_WIDTH = 28
 BATCH_SIZE = 32
@@ -79,6 +79,6 @@ history = model.fit(
 print("--- Model Training Complete ---\n")
 
 # 5. Save the Model
-model_filename = 'sudoku_custom_model_with_feedback.keras'
+model_filename = '../models/sudoku_custom_model_with_feedback.keras'
 model.save(model_filename)
 print(f"Model saved successfully as {model_filename}")

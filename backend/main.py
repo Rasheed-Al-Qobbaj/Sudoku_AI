@@ -1,10 +1,8 @@
 import time
 import copy
 
-import backtracking
-import csp
-import dancing_links
-from generator import generate_puzzle
+from backend import dancing_links, backtracking, csp
+from backend.generator import generate_puzzle
 from puzzles import puzzle_easy, puzzle_hard, print_board
 from rater import rate_puzzle
 
