@@ -1,32 +1,93 @@
+.sudoku-grid-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
 .sudoku-grid {
-    display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    width: 450px;
-    height: 450px;
-    border: 3px solid black;
-    margin: 20px auto;
+    border-collapse: collapse;
+    border: 3px solid #343a40;
+}
+
+.sudoku-grid td {
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: 1px solid #dee2e6;
+    position: relative;
+}
+
+.sudoku-grid tr:nth-child(3n) td {
+    border-bottom: 2px solid #343a40;
+}
+
+.sudoku-grid td:nth-child(3n) {
+    border-right: 2px solid #343a40;
 }
 
 .sudoku-cell {
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    font-size: 24px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
+    width: 100%; height: 100%; text-align: center;
+    font-size: 24px; font-weight: 500; border: none;
+    box-sizing: border-box; background-color: transparent; color: #333;
+}
+
+.sudoku-cell:focus {
+    outline: none; background-color: #e9ecef;
+}
+
+.sudoku-grid tr:last-child td {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.sudoku-grid td:last-child {
+    border-right: 1px solid #dee2e6;
 }
 
 
-.sudoku-cell:nth-child(3n) {
-    border-right: 2px solid black;
-}
-.sudoku-cell:nth-child(9n) {
-    border-right: 1px solid #ccc;
+.given-number, .correct-user-input {
+    font-weight: bold;
+    color: #343a40;
+    background-color: #f8f9fa;
 }
 
-tr:nth-child(3n) .sudoku-cell {
-    border-bottom: 2px solid black;
+
+.incorrect-cell {
+    background-color: #f8d7da;
+    transition: background-color 0.5s ease;
 }
-tr:last-child .sudoku-cell {
-     border-bottom: 1px solid #ccc;
+
+
+.pencil-notes {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+    pointer-events: none;
+}
+
+.note-number {
+    font-size: 10px;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#pencil-btn.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.solving-cell {
+    background-color: #cfe2ff;
+    transition: background-color 0.1s ease-in-out;
+}
+
+.backtrack-cell {
+    background-color: #f8d7da;
+    transition: background-color 0.1s ease-in-out;
+}
+
+#robot-btn.disabled {
+    pointer-events: none;
+    opacity: 0.65;
 }

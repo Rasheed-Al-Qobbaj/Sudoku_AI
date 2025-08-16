@@ -1,7 +1,7 @@
 import random
 import copy
-from csp import solve_board as solve_with_cp
-from backtracking import count_solutions
+from backend.csp import solve_board as solve_with_cp
+from backend.backtracking import count_solutions
 
 
 def generate_puzzle(difficulty='medium'):
